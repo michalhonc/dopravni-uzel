@@ -1,25 +1,22 @@
-import React from "react";
-import { StyleSheet, Text, View, Platform } from "react-native";
-import { Router, Route, Link } from "./react-router";
+import React from 'react';
+import { StyleSheet, Text, Image, View, Platform } from 'react-native';
+import { Router, Route, Link } from './react-router';
 
-const Home = () => <Text>Home</Text>;
+import { Home } from './pages/Home';
 
-const About = () => <Text>About</Text>;
+const About = () => <Text>Přidat uzel</Text>;
 
 const App = () => (
   <Router>
     <View style={styles.container}>
       <View style={styles.nav}>
         <Link to="/">
-          <Text>Home</Text>
-        </Link>
-        <Link to="/about">
-          <Text>About</Text>
+            <Image source={require('./assets/logo.png')} />
         </Link>
       </View>
 
       <Route exact path="/" component={Home} />
-      <Route path="/about" component={About} />
+      <Route path="/add" component={About} />
     </View>
   </Router>
 );
@@ -27,10 +24,12 @@ const App = () => (
 const styles = StyleSheet.create({
   container: {
     marginTop: 25,
+    marginBottom: 25,
     padding: 10
   },
   nav:{
     flexDirection: 'row',
+    marginBottom: 25,
     justifyContent: 'space-around',
   },
 });
