@@ -8,10 +8,11 @@ export const Home = (props) => {
         <View style={styles.container}>
             <Text>Dosud nebyly přidány uzly</Text>
             <Link
-                to="/add"
+                style={styles.link}
+                to="/find-route"
                 underlayColor="#F95700"
             >
-                <Text>Přidej uzel</Text>
+                <Text style={styles.linkText}>Přidej uzel</Text>
             </Link>
         </View>
     );
@@ -19,7 +20,18 @@ export const Home = (props) => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         justifyContent: 'space-between',
-        alignContent: 'center',
+        alignSelf: 'center',
+    },
+    link: {
+        backgroundColor: '#F95700',
+        padding: 10,
+        width: 150,
+        borderRadius: 100,
+    },
+    linkText: {
+        color: '#fff',
+        textAlign: 'center',
     },
 });
