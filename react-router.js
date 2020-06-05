@@ -2,5 +2,6 @@ export {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+	useHistory,
 } from "react-router-dom";

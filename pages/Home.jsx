@@ -1,20 +1,19 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { ApplicationProvider, Layout, Text, Button } from '@ui-kitten/components';
 
-import { Link } from 'react-router-native';
+import { useHistory } from '../react-router';
 
 export const Home = (props) => {
+    const history = useHistory();
+
     return (
-        <View style={styles.container}>
+        <Layout style={styles.container}>
             <Text>Dosud nebyly přidány uzly</Text>
-            <Link
-                style={styles.link}
-                to="/find-route"
-                underlayColor="#F95700"
-            >
-                <Text style={styles.linkText}>Přidej uzel</Text>
-            </Link>
-        </View>
+            <Button onPress={() => history.push('/find-route')}>
+                Přidej uzel
+            </Button>
+        </Layout>
     );
 }
 
@@ -22,16 +21,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
-        alignSelf: 'center',
-    },
-    link: {
-        backgroundColor: '#F95700',
-        padding: 10,
-        width: 150,
-        borderRadius: 100,
-    },
-    linkText: {
-        color: '#fff',
-        textAlign: 'center',
+        alignItems: 'center',
     },
 });

@@ -1,8 +1,11 @@
 import React from 'react';
 import FuzzySearch from 'fuzzy-search';
-import { StyleSheet, Button, View, Text, TextInput } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { Text, Input, Divider, List, ListItem, Layout } from '@ui-kitten/components';
 
 import { Link } from 'react-router-native';
+import { AppContext } from '../components/AppContext';
+import { Route } from '../components/Route';
 
 function useFuzzySearch(needle, haystack, keys) {
     const [result, setResult] = React.useState(null);
@@ -17,67 +20,91 @@ function useFuzzySearch(needle, haystack, keys) {
     return [result];
 }
 
+function formatSectionList(array) {
+    return array.map((item) => {
+        return {
+            title: item.name,
+            description: item.stops.tram && item.stops.tram.join(', '),
+            data: { ...item },
+        };
+    });
+}
+
+function formatStops(stops) {
+    const keys = Object.keys(stops); // [bus, noc, noc_tram, tram]
+    const res = [];
+    keys.forEach(key => {
+        stops[key].forEach(stop => {
+            res.push({
+                title: stop,
+                description: key,
+            });
+        });
+    });
+
+    return res;
+}
+
+
 export const FindRoute = (props) => {
+    const { stops, addRoute } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
-    const [stops, setStops] = React.useState([]);
     const [chosenStop, setChosenStop] = React.useState(null);
 
     const [searchResult] = useFuzzySearch(value, stops, ['search']);
 
-    React.useEffect(() => {
-        const fetchStops = async () => {
-            const rawStops = await fetch('https://pid.cz/stops.json');
-            const jsonStops = await rawStops.json();
-            setStops(jsonStops);
-        };
-
-        fetchStops();
-    }, []);
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.heading}>Přidejte spoj</Text>
-            <TextInput
-                style={styles.textInput}
+        <SafeAreaView style={styles.container}>
+            <Text category="h2" style={styles.heading}>Přidejte spoj</Text>
+            <Input
                 onChangeText={text => onChangeText(text)}
                 value={value}
                 placeholder="Zadejte zastávku.."
             />
-            <View>
-                {!chosenStop && searchResult && searchResult.map((result) => (
-                    <Button
-                      title={result.name}
-                      onPress={() => setChosenStop(result)}
+
+            {!chosenStop && searchResult && Array.isArray(searchResult) && (
+                <List
+                  style={styles.container}
+                  data={formatSectionList(searchResult)}
+                  ItemSeparatorComponent={Divider}
+                  renderItem={({ item }) => (
+                    <ListItem
+                        title={item.title}
+                        description={item.description}
+                        onPress={() => setChosenStop(item)}
                     />
-                ))}
-                {chosenStop && chosenStop.stops.tram && chosenStop.stops.tram.map((link) => (
-                    <Button
-                        title={`${link} - ${chosenStop.name}`}
-                        onPress={() => alert('Set')}
+                  )}
+                />
+            )}
+
+            {chosenStop && (
+                <>
+                    <Text category="h3">{chosenStop.title}</Text>
+                    <List
+                      style={styles.container}
+                      data={formatStops(chosenStop.data.stops)}
+                      ItemSeparatorComponent={Divider}
+                      renderItem={({ item }) => (
+                        <ListItem
+                            title={item.title}
+                            description={item.description}
+                            onPress={() => addRoute(chosenStop.title, item)}
+                        />
+                      )}
                     />
-                ))}
-            </View>
-        </View>
+                </>
+            )}
+
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    heading: {
+        textAlign: 'center',
+    },
     container: {
         flex: 1,
-        alignSelf: 'center',
-    },
-    heading: {
-        fontSize: 26,
-        textAlign: 'center',
-        marginBottom: 80,
-    },
-    textInput: {
-        height: 50,
-        width: 300,
-        borderColor: '#403D39',
-        borderWidth: 1,
-        borderRadius: 5,
-        padding: 10,
-        fontSize: 18,
+        alignSelf: 'stretch',
     },
 });

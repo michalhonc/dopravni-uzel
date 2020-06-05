@@ -2,5 +2,6 @@ export {
     NativeRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+	useHistory,
 } from "react-router-native";
