@@ -4,13 +4,13 @@ import { ApplicationProvider, Layout, Text, Button } from '@ui-kitten/components
 
 import { useHistory } from '../react-router';
 
-export const Home = (props) => {
+export const Home = () => {
     const history = useHistory();
 
     return (
         <Layout style={styles.container}>
             <Text>Dosud nebyly přidány uzly</Text>
-            <Button onPress={() => history.push('/find-route')}>
+            <Button onPress={() => history.push('/add-node')}>
                 Přidej uzel
             </Button>
         </Layout>

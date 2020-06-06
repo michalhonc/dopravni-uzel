@@ -13,12 +13,13 @@ import { ErrorBoundary } from './components/RootErrorBoundary';
 
 import { Home } from './pages/Home';
 import { FindRoute } from './pages/FindRoute';
+import { AddNode } from './pages/AddNode';
 
-const BackIcon = (props) => (
+const BackIcon = () => (
   <Icon style={styles.icon} name="arrow-back" />
 );
 
-const renderBackAction = (props) => (
+const renderBackAction = () => (
     <TopNavigationAction icon={() => (
         <Link to="/">
             <BackIcon />
@@ -47,6 +48,7 @@ const App = () => (
                         <Layout style={styles.container}>
                             <Route exact path="/" component={Home} />
                             <Route path="/find-route" component={FindRoute} />
+                            <Route path="/add-node" component={AddNode} />
                         </Layout>
                     </Router>
                 </ErrorBoundary>

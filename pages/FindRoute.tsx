@@ -7,9 +7,14 @@ import { Link } from 'react-router-native';
 import { AppContext } from '../components/AppContext';
 import { Route } from '../components/Route';
 
-import { useFetchStops } from '../hooks/useFetchStops';
+import { IStop, Stops } from '../types/AppContext.types';
 
-function useFuzzySearch(needle, haystack, keys) {
+interface IList {
+    title: string;
+    description: string;
+}
+
+function useFuzzySearch(needle: string, haystack: object, keys: string[]) {
     const [result, setResult] = React.useState(null);
 
     React.useEffect(() => {
@@ -22,7 +27,7 @@ function useFuzzySearch(needle, haystack, keys) {
     return [result];
 }
 
-function formatSectionList(array) {
+function formatSectionList(array: IStop[]): IList[] {
     return array.map((item) => {
         return {
             title: item.name,
@@ -32,9 +37,9 @@ function formatSectionList(array) {
     });
 }
 
-function formatStops(stops) {
+function formatStops(stops: Stops[]) {
     const keys = Object.keys(stops); // [bus, noc, noc_tram, tram]
-    const res = [];
+    const res: IList[] = [];
     keys.forEach(key => {
         stops[key].forEach(stop => {
             res.push({
@@ -47,11 +52,14 @@ function formatStops(stops) {
     return res;
 }
 
-export const FindRoute = (props) => {
-    useFetchStops();
+export const FindRoute = () => {
     const { state, dispatch } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
     const [chosenStop, setChosenStop] = React.useState(null);
+
+    const handleSetRoute = (stop, route) => {
+        //dispatch(['ADD_ROUTE', route]);
+    };
 
     const [searchResult] = useFuzzySearch(value, state.stops, ['search']);
 
@@ -94,7 +102,7 @@ export const FindRoute = (props) => {
                         <ListItem
                             title={item.title}
                             description={item.description}
-                            //onPress={() => addRoute(chosenStop.title, item)}
+                            onPress={() => handleSetRoute(chosenStop, item)}
                         />
                       )}
                     />
