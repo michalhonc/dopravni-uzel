@@ -2,10 +2,12 @@ import React from 'react';
 import FuzzySearch from 'fuzzy-search';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { Text, Input, Divider, List, ListItem, Layout } from '@ui-kitten/components';
-
 import { Link } from 'react-router-native';
+
 import { AppContext } from '../components/AppContext';
 import { Route } from '../components/Route';
+
+import { useFetchStops } from '../hooks/useFetchStops';
 
 function useFuzzySearch(needle, haystack, keys) {
     const [result, setResult] = React.useState(null);
@@ -45,19 +47,24 @@ function formatStops(stops) {
     return res;
 }
 
-
 export const FindRoute = (props) => {
-    const { stops, addRoute } = React.useContext(AppContext);
+    useFetchStops();
+    const { state, dispatch } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
     const [chosenStop, setChosenStop] = React.useState(null);
 
-    const [searchResult] = useFuzzySearch(value, stops, ['search']);
+    const [searchResult] = useFuzzySearch(value, state.stops, ['search']);
 
     return (
         <SafeAreaView style={styles.container}>
             <Text category="h2" style={styles.heading}>Přidejte spoj</Text>
             <Input
-                onChangeText={text => onChangeText(text)}
+                style={styles.input}
+                onChangeText={text => {
+                    setChosenStop(null);
+                    onChangeText(text)
+                }}
+                size="medium"
                 value={value}
                 placeholder="Zadejte zastávku.."
             />
@@ -78,21 +85,20 @@ export const FindRoute = (props) => {
             )}
 
             {chosenStop && (
-                <>
-                    <Text category="h3">{chosenStop.title}</Text>
+                <Layout>
+                    <Text category="h4">{chosenStop.title}</Text>
                     <List
-                      style={styles.container}
                       data={formatStops(chosenStop.data.stops)}
                       ItemSeparatorComponent={Divider}
                       renderItem={({ item }) => (
                         <ListItem
                             title={item.title}
                             description={item.description}
-                            onPress={() => addRoute(chosenStop.title, item)}
+                            //onPress={() => addRoute(chosenStop.title, item)}
                         />
                       )}
                     />
-                </>
+                </Layout>
             )}
 
         </SafeAreaView>
@@ -102,9 +108,14 @@ export const FindRoute = (props) => {
 const styles = StyleSheet.create({
     heading: {
         textAlign: 'center',
+        marginBottom: 20,
     },
     container: {
         flex: 1,
         alignSelf: 'stretch',
+    },
+    input: {
+        marginBottom: 20,
+
     },
 });

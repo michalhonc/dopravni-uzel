@@ -5,43 +5,67 @@ import { Router, Route, Link } from './react-router';
 import Constants from 'expo-constants';
 
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import { ApplicationProvider, Icon, Layout, Text, TopNavigation, TopNavigationAction, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import { AppContextProvider } from './components/AppContext';
+import { ErrorBoundary } from './components/RootErrorBoundary';
 
 import { Home } from './pages/Home';
 import { FindRoute } from './pages/FindRoute';
 
-const App = () => (
-    <ApplicationProvider {...eva} theme={eva.light}>
-        <AppContextProvider>
-            <Router>
-                <Layout style={styles.container}>
-                    <View style={styles.nav}>
-                        <Link to="/" underlayColor="#fff">
-                            <Image source={require('./assets/logo.png')} />
-                        </Link>
-                    </View>
+const BackIcon = (props) => (
+  <Icon style={styles.icon} name="arrow-back" />
+);
 
-                    <Route exact path="/" component={Home} />
-                    <Route path="/find-route" component={FindRoute} />
-                </Layout>
-            </Router>
-        </AppContextProvider>
-    </ApplicationProvider>
+const renderBackAction = (props) => (
+    <TopNavigationAction icon={() => (
+        <Link to="/">
+            <BackIcon />
+        </Link>
+    )}
+    />
+);
+
+//<Image source={require('./assets/logo.png')} />
+
+const App = () => (
+    <>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider {...eva} theme={eva.light}>
+            <AppContextProvider>
+                <ErrorBoundary>
+                    <Router>
+                        <Layout style={styles.nav} level="1">
+                          <TopNavigation
+                            alignment="center"
+                            title="Dopravní uzel"
+                            subtitle="Najděte svůj spoj"
+                            accessoryLeft={renderBackAction}
+                          />
+                        </Layout>
+                        <Layout style={styles.container}>
+                            <Route exact path="/" component={Home} />
+                            <Route path="/find-route" component={FindRoute} />
+                        </Layout>
+                    </Router>
+                </ErrorBoundary>
+            </AppContextProvider>
+        </ApplicationProvider>
+    </>
 );
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: 25,
-        padding: 10,
+        paddingHorizontal: 20,
+    },
+    nav: {
         marginTop: Constants.statusBarHeight,
     },
-    nav:{
-        flexDirection: 'row',
-        marginBottom: 25,
-        justifyContent: 'space-around',
+    icon: {
+        width: 32,
+        height: 32,
     },
 });
 
