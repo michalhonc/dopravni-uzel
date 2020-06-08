@@ -16,13 +16,14 @@ export enum RouteType {
 
 interface IRoute {
     name: string;
+    type: RouteType;
+    stop: string;
+    //direction: string;
 }
 
-interface INodes {
-    [key: string]: {
-        name: string;
-        routes: Array<IRoute>;
-    }
+interface INode {
+    name: string;
+    routes: Array<IRoute>;
 }
 
 export type Stops = {
@@ -35,15 +36,16 @@ export interface IStop {
 }
 
 export interface IState {
-    nodes: INodes;
+    nodes: INode[];
     stops: IStop[];
 }
 
 interface IAddRoute {
     stop: IStop;
     node: {
+        id: string;
         name: string;
-        routes: Array<IRoute>;
+        route: IRoute;
     }
 }
 

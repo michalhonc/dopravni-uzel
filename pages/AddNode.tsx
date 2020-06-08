@@ -14,18 +14,32 @@ export const AddNode = (props) => {
     const history = useHistory();
     const { state, dispatch } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
+    const [error, setError] = React.useState('');
 
     const handleButtonPress = () => {
-        dispatch(['ADD_NODE', {
+        const isPresent = state.nodes.some((node) => node.name === value);
+        if (isPresent) {
+            setError('Uzel s tímto názvem již existuje');
+            return;
+        }
+
+        const newNode = {
             name: value,
             id: base64.encode(value),
-        }]);
-        history.push('/find-route');
+        };
+        dispatch(['ADD_NODE', newNode]);
+        history.push({
+            pathname: '/find-route',
+            state: { node: newNode },
+        });
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <Text category="h2" style={styles.heading}>Vytvoř uzel</Text>
+            {!!error && (
+                <Text status="danger">{error}</Text>
+            )}
             <Input
                 style={styles.input}
                 onChangeText={text => {

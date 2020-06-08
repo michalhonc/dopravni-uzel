@@ -7,7 +7,7 @@ import { Link } from 'react-router-native';
 import { AppContext } from '../components/AppContext';
 import { Route } from '../components/Route';
 
-import { IStop, Stops } from '../types/AppContext.types';
+import { IStop, Stops, Action} from '../types/AppContext.types';
 
 interface IList {
     title: string;
@@ -45,6 +45,7 @@ function formatStops(stops: Stops[]) {
             res.push({
                 title: stop,
                 description: key,
+                data: { ...stops[key] },
             });
         });
     });
@@ -52,20 +53,17 @@ function formatStops(stops: Stops[]) {
     return res;
 }
 
-export const FindRoute = () => {
+export const FindRoute = (props) => {
     const { state, dispatch } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
     const [chosenStop, setChosenStop] = React.useState(null);
-
-    const handleSetRoute = (stop, route) => {
-        //dispatch(['ADD_ROUTE', route]);
-    };
 
     const [searchResult] = useFuzzySearch(value, state.stops, ['search']);
 
     return (
         <SafeAreaView style={styles.container}>
             <Text category="h2" style={styles.heading}>Přidejte spoj</Text>
+            <Text>Přidané spoje: {JSON.stringify(state.nodes)}}</Text>
             <Input
                 style={styles.input}
                 onChangeText={text => {
@@ -102,7 +100,17 @@ export const FindRoute = () => {
                         <ListItem
                             title={item.title}
                             description={item.description}
-                            onPress={() => handleSetRoute(chosenStop, item)}
+                            onPress={() => {
+                                dispatch([Action.ADD_ROUTE, {
+                                    ...props.history.location.state,
+                                    route: {
+                                        name: item.title,
+                                        type: item.description,
+                                        stop: chosenStop.title,
+                                    },
+                                }])
+                                console.log({item, chosenStop})
+                            }}
                         />
                       )}
                     />
