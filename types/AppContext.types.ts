@@ -1,5 +1,6 @@
 export enum Action {
     ADD_ROUTE = 'ADD_ROUTE',
+    REMOVE_ROUTE = 'REMOVE_ROUTE',
     ADD_NODE = 'ADD_NODE',
     FETCH_STOPS = 'FETCH_STOPS',
 }
@@ -14,14 +15,14 @@ export enum RouteType {
     NAHRAD = 'nahrad',
 }
 
-interface IRoute {
+export interface IRoute {
     name: string;
     type: RouteType;
     stop: string;
     //direction: string;
 }
 
-interface INode {
+export interface INode {
     name: string;
     routes: Array<IRoute>;
 }
@@ -49,6 +50,15 @@ interface IAddRoute {
     }
 }
 
+interface IRemoveRoute {
+    node: {
+        id: string;
+        name: string;
+        routes: IRoute[];
+    };
+    route: IRoute;
+}
+
 interface IAddNode {
     name: string;
     id: string;
@@ -60,6 +70,7 @@ export interface IContext {
 }
 
 type AddRoute = [Action.ADD_ROUTE, IAddRoute];
+type RemoveRoute = [Action.REMOVE_ROUTE, IRemoveRoute];
 type AddNode = [Action.ADD_NODE, IAddNode];
 
 export type AppPayloads = AddRoute

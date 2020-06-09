@@ -6,8 +6,7 @@ import { Link } from 'react-router-native';
 
 import { AppContext } from '../components/AppContext';
 import { Route } from '../components/Route';
-
-import { IStop, Stops, Action} from '../types/AppContext.types';
+import { IStop, Stops, Action, IRoute } from '../types/AppContext.types';
 
 interface IList {
     title: string;
@@ -53,17 +52,48 @@ function formatStops(stops: Stops[]) {
     return res;
 }
 
+function formatRoutes(routes: IRoute[]) {
+    return routes.map((route) => ({
+        title: `${route.name} (${route.type})`,
+        description: route.stop,
+        data: { ...route },
+    }));
+}
+
 export const FindRoute = (props) => {
     const { state, dispatch } = React.useContext(AppContext);
     const [value, onChangeText] = React.useState('');
     const [chosenStop, setChosenStop] = React.useState(null);
 
     const [searchResult] = useFuzzySearch(value, state.stops, ['search']);
+    const currentNode = state.nodes.find((node) => node.name === props.history.location.state.node.name);
 
     return (
         <SafeAreaView style={styles.container}>
             <Text category="h2" style={styles.heading}>Přidejte spoj</Text>
-            <Text>Přidané spoje: {JSON.stringify(state.nodes)}}</Text>
+            {currentNode.routes.length > 0 && (
+                <Layout>
+                    <Text category="h3">Přidané spoje v uzlu</Text>
+                    <List
+                      data={formatRoutes(currentNode.routes)}
+                      ItemSeparatorComponent={Divider}
+                      renderItem={({ item }) => (
+                        <ListItem
+                            title={item.title}
+                            description={item.description}
+                            onPress={() => {
+                                dispatch([Action.REMOVE_ROUTE, {
+                                    node: currentNode,
+                                    route: item.data,
+                                }]);
+                            }}
+                        />
+                      )}
+                    />
+
+                </Layout>
+            )}
+            <Divider />
             <Input
                 style={styles.input}
                 onChangeText={text => {
@@ -109,7 +139,6 @@ export const FindRoute = (props) => {
                                         stop: chosenStop.title,
                                     },
                                 }])
-                                console.log({item, chosenStop})
                             }}
                         />
                       )}

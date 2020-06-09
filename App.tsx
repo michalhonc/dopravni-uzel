@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { StyleSheet, Image, Platform, View } from 'react-native';
-import { Router, Route, Link } from './react-router';
+import { Router, Route, Link, useHistory } from './react-router';
 import Constants from 'expo-constants';
 
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Icon, Layout, Text, TopNavigation, TopNavigationAction, IconRegistry } from '@ui-kitten/components';
+import { ApplicationProvider, Icon, Layout, Text, TopNavigation, TopNavigationAction, IconRegistry, Button } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import { AppContextProvider } from './components/AppContext';
@@ -16,17 +16,15 @@ import { FindRoute } from './pages/FindRoute';
 import { AddNode } from './pages/AddNode';
 
 const BackIcon = () => (
-  <Icon style={styles.icon} name="arrow-back" />
+  <Icon style={styles.icon} fill="#000" name="arrow-back" />
 );
 
-const renderBackAction = () => (
-    <TopNavigationAction icon={() => (
-        <Link to="/">
-            <BackIcon />
-        </Link>
-    )}
-    />
-);
+const renderBackAction = () => {
+    const history = useHistory();
+    return (
+        <TopNavigationAction icon={() => <BackIcon />} onPress={() => history.goBack()} />
+    );
+};
 
 //<Image source={require('./assets/logo.png')} />
 

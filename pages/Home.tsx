@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ApplicationProvider, Layout, Text, Button, List, ListItem } from '@ui-kitten/components';
 
 import { useHistory } from '../react-router';
@@ -25,17 +25,19 @@ export const Home = () => {
                 ) : (
                     <View style={styles.nodes}>
                         {state.nodes.map((node) => (
-                            <Layout>
-                                <Text>{node.name}</Text>
-                                <List
-                                  data={addListData(node.routes)}
-                                  renderItem={({ item }) => (
-                                    <ListItem
-                                        title={item.title}
-                                        description={item.description}
+                            <Layout key={node.name}>
+                                <TouchableOpacity onPress={() => history.push({ pathname: '/find-route', state: { node } })}>
+                                    <Text category="h4">{node.name}</Text>
+                                </TouchableOpacity>
+                                    <List
+                                      data={addListData(node.routes)}
+                                      renderItem={({ item }) => (
+                                        <ListItem
+                                            title={item.title}
+                                            description={item.description}
+                                        />
+                                      )}
                                     />
-                                  )}
-                                />
                             </Layout>
                         ))}
                     </View>

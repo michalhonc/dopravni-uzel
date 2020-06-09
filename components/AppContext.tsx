@@ -51,6 +51,27 @@ export function reviewReducer(state: IState, [action, payload]: AppPayloads) {
                 nodes: newNodes,
             };
         }
+        case Action.REMOVE_ROUTE: {
+            const newNodes = state.nodes.map((node) => {
+                let newRoutes = [...node.routes];
+                if (node.id === payload.node.id) {
+                    newRoutes = newRoutes.filter((route) => {
+                        if (route.name === payload.route.name && route.stop === payload.route.stop) {
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+                return {
+                    ...node,
+                    routes: newRoutes,
+                };
+            });
+            return {
+                ...state,
+                nodes: newNodes,
+            };
+        }
         case Action.ADD_NODE: {
             return {
                 ...state,
