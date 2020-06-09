@@ -21,7 +21,7 @@ export const Home = () => {
         <Layout style={styles.container}>
             {state.nodes.length === 0
                 ? (
-                    <Text>Dosud nebyly přidány uzly</Text>
+                    <Text style={styles.noNodes}>Dosud nebyly přidány uzly</Text>
                 ) : (
                     <View style={styles.nodes}>
                         {state.nodes.map((node) => (
@@ -59,5 +59,8 @@ const styles = StyleSheet.create({
     },
     nodes: {
         flex: 1,
+    },
+    noNodes: {
+        textAlign: 'center',
     },
 });
